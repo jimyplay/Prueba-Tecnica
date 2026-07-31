@@ -96,17 +96,40 @@ decisión de alcance, no como descuido.
    - `update public.usuarios set role = 'admin' where email = 'tu-email@ejemplo.com';`
 7. `npm run dev` y entrar con ese usuario en `http://localhost:3000`.
 
+## Nota sobre el remitente de Resend (plan gratuito)
+
+Con el sender por defecto `onboarding@resend.dev` (sin dominio propio
+verificado), Resend **solo entrega a la dirección con la que se creó la
+cuenta**. Para que el "cliente" de una licitación de prueba reciba el email,
+su campo `email` debe ser esa misma dirección. Si se quiere enviar a
+cualquier destinatario, hay que verificar un dominio en
+resend.com/domains y usar un `from` de ese dominio.
+
 ## Evidencia de las integraciones reales
 
-_(pendiente de completar una vez cargada una cuenta real de Resend — ver "Pendientes")._
+Verificado directamente contra las APIs reales (Resend + Storage) durante el
+desarrollo, antes de tener la UI probada en navegador:
 
-- Email real recibido con documento adjunto: _(captura/log de Resend)_
-- URL real y accesible del documento subido a Storage: _(bucket `propuestas`, público)_
-- Corrida del cron en producción: `select * from cron.job_run_details order by start_time desc;` en el proyecto Supabase.
+- **Email con adjunto**: enviado y confirmado por Resend (`id` de mensaje
+  devuelto por `POST https://api.resend.com/emails`, mismo request que arma
+  `lib/email/resend.ts` + `app/api/licitaciones/[id]/enviar/route.ts`).
+- **Recordatorio automático desde el cron**: se ejecutó manualmente
+  `select public.enviar_recordatorios_vencimiento();` sobre una licitación
+  real con `fecha_limite` <48h, y se confirmó en `net._http_response` que
+  Resend respondió `status_code: 200` con un `id` de mensaje — prueba que el
+  camino `pg_cron → pg_net → Resend` funciona end-to-end dentro de Postgres,
+  no solo en teoría.
+- **Storage**: se subió un archivo real al bucket `propuestas` vía la API
+  REST y se confirmó que su URL pública (`/storage/v1/object/public/...`)
+  devuelve el contenido correcto con `200 OK`.
+- **Datos de prueba usados en estas verificaciones ya fueron eliminados** —
+  la base quedó limpia. Falta capturar evidencia "de producto real": crear
+  una licitación real desde la UI, enviarla, y guardar captura del email
+  recibido + captura del `cron.job_run_details` en el proyecto desplegado.
 
-## Pendientes (requieren credenciales del usuario, no bloquean el resto del código)
+## Pendientes
 
-- [ ] Cuenta de Resend + API key (`RESEND_API_KEY` local + secreto `resend_api_key` en Vault).
-- [ ] Deploy en Vercel (env vars: URL/anon key públicas, service-role key server-only).
-- [ ] Admin bootstrap real (pasos 5–6 de arriba).
-- [ ] Evidencia final (capturas de email recibido, URL del documento, log de `cron.job_run_details`).
+- [ ] Deploy en Vercel (env vars: URL/anon key públicas, service-role key server-only; `RESEND_API_KEY` — la key de Resend, aunque ya está en Vault para el cron, la ruta `enviar` también la lee de esta env var).
+- [ ] Admin bootstrap real (pasos 5–6 de arriba) en el proyecto ya desplegado.
+- [ ] Probar el flujo completo desde el navegador (creado y verificado por API/SQL hasta ahora, falta clickear la UI real).
+- [ ] Evidencia final "de producto real" para la entrega (capturas de email recibido, URL del documento, log de `cron.job_run_details` en producción).
