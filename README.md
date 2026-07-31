@@ -6,6 +6,8 @@ seguimiento hasta su fecha límite (con recordatorio automático), resolverlas
 (ganada/perdida) y, si se ganaron, facturarlas y cobrarlas hasta saldar —
 todo auditado paso a paso.
 
+**Despliegue:** https://prueba-tecnica-dbw6tjwy8-jimyplay1.vercel.app
+
 ## Stack
 
 - **Next.js 16** (App Router, TypeScript) — full-stack, un solo repo/deploy.
@@ -78,6 +80,15 @@ leer/escribir. La seguridad real de las reglas de negocio vive en los
 triggers (ver arriba), no en RLS. Esto se documenta acá explícitamente como
 decisión de alcance, no como descuido.
 
+`get_advisors` (Supabase) señala además, y se acepta por la misma razón:
+- El bucket `propuestas` permite listar sus objetos a cualquier `authenticated`
+  (necesario para que `enviar` pueda descargar el documento por su path).
+  No expone nada que esas mismas políticas de tablas no expongan ya.
+- `pg_net` queda instalado en el schema `public` — Postgres no permite
+  reasignarle schema a esa extensión (`ALTER EXTENSION ... SET SCHEMA`
+  falla explícitamente para `pg_net`), así que es un warning inevitable
+  con este mecanismo de cron.
+
 ## Setup local
 
 1. `npm install`
@@ -126,10 +137,14 @@ desarrollo, antes de tener la UI probada en navegador:
   la base quedó limpia. Falta capturar evidencia "de producto real": crear
   una licitación real desde la UI, enviarla, y guardar captura del email
   recibido + captura del `cron.job_run_details` en el proyecto desplegado.
+- **Deploy en Vercel**: verificado público y funcional — `/` redirige a
+  `/login` (307), `/login` responde 200, y la API rechaza requests sin
+  sesión con 401. El cron corre solo dentro de Supabase independientemente
+  del deploy: `cron.job_run_details` muestra ambos jobs en `succeeded` cada
+  15 min de forma continua desde que se crearon.
 
 ## Pendientes
 
-- [ ] Deploy en Vercel (env vars: URL/anon key públicas, service-role key server-only; `RESEND_API_KEY` — la key de Resend, aunque ya está en Vault para el cron, la ruta `enviar` también la lee de esta env var).
 - [ ] Admin bootstrap real (pasos 5–6 de arriba) en el proyecto ya desplegado.
 - [ ] Probar el flujo completo desde el navegador (creado y verificado por API/SQL hasta ahora, falta clickear la UI real).
 - [ ] Evidencia final "de producto real" para la entrega (capturas de email recibido, URL del documento, log de `cron.job_run_details` en producción).
