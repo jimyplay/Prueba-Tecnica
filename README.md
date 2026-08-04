@@ -6,7 +6,14 @@ seguimiento hasta su fecha límite (con recordatorio automático), resolverlas
 (ganada/perdida) y, si se ganaron, facturarlas y cobrarlas hasta saldar —
 todo auditado paso a paso.
 
-**Despliegue:** https://prueba-tecnica-dbw6tjwy8-jimyplay1.vercel.app
+**Despliegue:** https://prueba-tecnica-jimyplay1.vercel.app
+
+> Usar siempre esta URL (dominio fijo de Production, sin hash de deployment).
+> Las URLs con hash (`prueba-tecnica-<hash>-jimyplay1.vercel.app`) quedan
+> congeladas en el deployment del momento en que se generaron y no reciben
+> actualizaciones de commits posteriores — nos pasó factura durante las
+> pruebas: un fix ya pusheado no se veía porque se seguía probando contra
+> una de esas URLs vieja.
 
 ## Stack
 
