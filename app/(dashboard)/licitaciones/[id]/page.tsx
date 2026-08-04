@@ -275,11 +275,11 @@ export default function LicitacionDetallePage({
         {editable && (
           <div className="flex items-end gap-3 border-t border-gray-100 pt-3">
             <div className="space-y-1">
-              <label className="text-sm text-gray-700">Producto</label>
+              <label className="text-sm font-semibold text-gray-800">Producto</label>
               <select
                 value={productoId}
                 onChange={(e) => setProductoId(e.target.value)}
-                className="rounded-md border border-gray-300 px-3 py-2 text-sm"
+                className="rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900"
               >
                 <option value="">Seleccioná</option>
                 {catalogoProductos.map((p) => (
@@ -290,13 +290,13 @@ export default function LicitacionDetallePage({
               </select>
             </div>
             <div className="space-y-1">
-              <label className="text-sm text-gray-700">Cantidad</label>
+              <label className="text-sm font-semibold text-gray-800">Cantidad</label>
               <input
                 type="number"
                 min="1"
                 value={cantidad}
                 onChange={(e) => setCantidad(e.target.value)}
-                className="w-20 rounded-md border border-gray-300 px-3 py-2 text-sm"
+                className="w-20 rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900"
               />
             </div>
             <button
@@ -336,14 +336,14 @@ export default function LicitacionDetallePage({
           {licitacion.estado === "por_cobrar" && (
             <div className="flex items-end gap-3 border-t border-gray-100 pt-3">
               <div className="space-y-1">
-                <label className="text-sm text-gray-700">Monto</label>
+                <label className="text-sm font-semibold text-gray-800">Monto</label>
                 <input
                   type="number"
                   min="0"
                   step="0.01"
                   value={montoPago}
                   onChange={(e) => setMontoPago(e.target.value)}
-                  className="w-32 rounded-md border border-gray-300 px-3 py-2 text-sm"
+                  className="w-32 rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900"
                 />
               </div>
               <button

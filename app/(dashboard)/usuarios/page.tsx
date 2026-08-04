@@ -67,40 +67,40 @@ export default function UsuariosPage() {
         className="flex flex-wrap items-end gap-3 rounded-lg border border-gray-200 bg-white p-4"
       >
         <div className="space-y-1">
-          <label className="text-sm text-gray-700">Email</label>
+          <label className="text-sm font-semibold text-gray-800">Email</label>
           <input
             required
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="rounded-md border border-gray-300 px-3 py-2 text-sm"
+            className="rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900"
           />
         </div>
         <div className="space-y-1">
-          <label className="text-sm text-gray-700">Contraseña</label>
+          <label className="text-sm font-semibold text-gray-800">Contraseña</label>
           <input
             required
             type="password"
             minLength={8}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="rounded-md border border-gray-300 px-3 py-2 text-sm"
+            className="rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900"
           />
         </div>
         <div className="space-y-1">
-          <label className="text-sm text-gray-700">Nombre</label>
+          <label className="text-sm font-semibold text-gray-800">Nombre</label>
           <input
             value={nombre}
             onChange={(e) => setNombre(e.target.value)}
-            className="rounded-md border border-gray-300 px-3 py-2 text-sm"
+            className="rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900"
           />
         </div>
         <div className="space-y-1">
-          <label className="text-sm text-gray-700">Rol</label>
+          <label className="text-sm font-semibold text-gray-800">Rol</label>
           <select
             value={role}
             onChange={(e) => setRole(e.target.value as "admin" | "user")}
-            className="rounded-md border border-gray-300 px-3 py-2 text-sm"
+            className="rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900"
           >
             <option value="user">user</option>
             <option value="admin">admin</option>

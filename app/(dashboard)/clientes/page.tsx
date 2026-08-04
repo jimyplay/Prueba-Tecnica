@@ -106,29 +106,29 @@ export default function ClientesPage() {
         className="flex flex-wrap items-end gap-3 rounded-lg border border-gray-200 bg-white p-4"
       >
         <div className="space-y-1">
-          <label className="text-sm text-gray-700">Nombre</label>
+          <label className="text-sm font-semibold text-gray-800">Nombre</label>
           <input
             required
             value={nombre}
             onChange={(e) => setNombre(e.target.value)}
-            className="rounded-md border border-gray-300 px-3 py-2 text-sm"
+            className="rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900"
           />
         </div>
         <div className="space-y-1">
-          <label className="text-sm text-gray-700">Email</label>
+          <label className="text-sm font-semibold text-gray-800">Email</label>
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="rounded-md border border-gray-300 px-3 py-2 text-sm"
+            className="rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900"
           />
         </div>
         <div className="space-y-1">
-          <label className="text-sm text-gray-700">Teléfono</label>
+          <label className="text-sm font-semibold text-gray-800">Teléfono</label>
           <input
             value={telefono}
             onChange={(e) => setTelefono(e.target.value)}
-            className="rounded-md border border-gray-300 px-3 py-2 text-sm"
+            className="rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900"
           />
         </div>
         <button
@@ -150,20 +150,20 @@ export default function ClientesPage() {
                   value={editNombre}
                   onChange={(e) => setEditNombre(e.target.value)}
                   placeholder="Nombre"
-                  className="rounded-md border border-gray-300 px-2 py-1 text-sm"
+                  className="rounded-md border border-gray-300 px-2 py-1 text-sm text-gray-900"
                 />
                 <input
                   type="email"
                   value={editEmail}
                   onChange={(e) => setEditEmail(e.target.value)}
                   placeholder="Email"
-                  className="rounded-md border border-gray-300 px-2 py-1 text-sm"
+                  className="rounded-md border border-gray-300 px-2 py-1 text-sm text-gray-900"
                 />
                 <input
                   value={editTelefono}
                   onChange={(e) => setEditTelefono(e.target.value)}
                   placeholder="Teléfono"
-                  className="rounded-md border border-gray-300 px-2 py-1 text-sm"
+                  className="rounded-md border border-gray-300 px-2 py-1 text-sm text-gray-900"
                 />
                 <button
                   disabled={editLoading}

@@ -42,7 +42,7 @@ export default function LoginPage() {
         <p className="text-sm text-gray-500">Iniciá sesión para continuar</p>
 
         <div className="space-y-1">
-          <label htmlFor="email" className="text-sm font-medium text-gray-700">
+          <label htmlFor="email" className="text-sm font-semibold text-gray-800">
             Email
           </label>
           <input
@@ -51,12 +51,12 @@ export default function LoginPage() {
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
+            className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900"
           />
         </div>
 
         <div className="space-y-1">
-          <label htmlFor="password" className="text-sm font-medium text-gray-700">
+          <label htmlFor="password" className="text-sm font-semibold text-gray-800">
             Contraseña
           </label>
           <input
@@ -65,7 +65,7 @@ export default function LoginPage() {
             required
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
+            className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900"
           />
         </div>
 

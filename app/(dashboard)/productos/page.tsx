@@ -65,24 +65,24 @@ export default function ProductosPage() {
         className="flex flex-wrap items-end gap-3 rounded-lg border border-gray-200 bg-white p-4"
       >
         <div className="space-y-1">
-          <label className="text-sm text-gray-700">Nombre</label>
+          <label className="text-sm font-semibold text-gray-800">Nombre</label>
           <input
             required
             value={nombre}
             onChange={(e) => setNombre(e.target.value)}
-            className="rounded-md border border-gray-300 px-3 py-2 text-sm"
+            className="rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900"
           />
         </div>
         <div className="space-y-1">
-          <label className="text-sm text-gray-700">Descripción</label>
+          <label className="text-sm font-semibold text-gray-800">Descripción</label>
           <input
             value={descripcion}
             onChange={(e) => setDescripcion(e.target.value)}
-            className="rounded-md border border-gray-300 px-3 py-2 text-sm"
+            className="rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900"
           />
         </div>
         <div className="space-y-1">
-          <label className="text-sm text-gray-700">Precio unitario</label>
+          <label className="text-sm font-semibold text-gray-800">Precio unitario</label>
           <input
             required
             type="number"
@@ -90,7 +90,7 @@ export default function ProductosPage() {
             step="0.01"
             value={precio}
             onChange={(e) => setPrecio(e.target.value)}
-            className="w-28 rounded-md border border-gray-300 px-3 py-2 text-sm"
+            className="w-28 rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900"
           />
         </div>
         <button

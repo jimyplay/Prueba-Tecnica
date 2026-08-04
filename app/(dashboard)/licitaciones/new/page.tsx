@@ -59,12 +59,12 @@ export default function NuevaLicitacionPage() {
         className="space-y-4 rounded-lg border border-gray-200 bg-white p-6"
       >
         <div className="space-y-1">
-          <label className="text-sm text-gray-700">Cliente</label>
+          <label className="text-sm font-semibold text-gray-800">Cliente</label>
           <select
             required
             value={clienteId}
             onChange={(e) => setClienteId(e.target.value)}
-            className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
+            className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900"
           >
             <option value="">Seleccioná un cliente</option>
             {clientes.map((c) => (
@@ -76,26 +76,26 @@ export default function NuevaLicitacionPage() {
         </div>
 
         <div className="space-y-1">
-          <label className="text-sm text-gray-700">Título</label>
+          <label className="text-sm font-semibold text-gray-800">Título</label>
           <input
             required
             value={titulo}
             onChange={(e) => setTitulo(e.target.value)}
-            className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
+            className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900"
           />
         </div>
 
         <div className="space-y-1">
-          <label className="text-sm text-gray-700">Descripción</label>
+          <label className="text-sm font-semibold text-gray-800">Descripción</label>
           <textarea
             value={descripcion}
             onChange={(e) => setDescripcion(e.target.value)}
-            className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
+            className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900"
           />
         </div>
 
         <div className="space-y-1">
-          <label className="text-sm text-gray-700">Presupuesto máximo</label>
+          <label className="text-sm font-semibold text-gray-800">Presupuesto máximo</label>
           <input
             required
             type="number"
@@ -103,18 +103,18 @@ export default function NuevaLicitacionPage() {
             step="0.01"
             value={presupuesto}
             onChange={(e) => setPresupuesto(e.target.value)}
-            className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
+            className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900"
           />
         </div>
 
         <div className="space-y-1">
-          <label className="text-sm text-gray-700">Fecha límite</label>
+          <label className="text-sm font-semibold text-gray-800">Fecha límite</label>
           <input
             required
             type="datetime-local"
             value={fechaLimite}
             onChange={(e) => setFechaLimite(e.target.value)}
-            className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
+            className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900"
           />
         </div>
 
