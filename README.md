@@ -61,7 +61,10 @@ cron — queda registrado en `historial_transiciones` (usuario `null` = sistema)
 - Al enviar, se dispara un email real al cliente con el resumen y el documento adjunto.
 - Productos bloqueados (no se pueden agregar/quitar) en `finalizada`, `por_cobrar`, `cobrada`, `perdida`.
 - Pagos solo en `por_cobrar`; un pago no puede superar el saldo pendiente.
-- Al llegar el saldo a $0, la licitación pasa automáticamente a `cobrada`.
+- Al llegar el saldo a $0, la licitación pasa automáticamente a `cobrada` — ya
+  sea porque los pagos lo saldaron, o porque se facturó directamente por $0
+  (ej. sin productos cargados): en ese caso no hay pago que registrar, así
+  que el propio paso a `por_cobrar` dispara el auto-cobro inmediato.
 - Job programado (`pg_cron`, cada 15 min): `activa` con `fecha_limite` vencida → `perdida`;
   `activa` con menos de 48h para vencer → recordatorio por email (una sola vez, vía `reminder_sent_at`).
 
