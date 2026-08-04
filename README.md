@@ -40,6 +40,16 @@ archivo también traduce errores de Supabase Storage (forma distinta a los de
 Postgrest — `status`/`statusCode` en vez de `code`) para que una subida
 fallida muestre el motivo real en vez de un 500 genérico.
 
+**Subida de documentos: directo del navegador a Storage.** Las funciones
+serverless de Vercel rechazan cualquier request de más de ~4.5MB
+(`FUNCTION_PAYLOAD_TOO_LARGE`) antes de que el código de la app la vea — un
+PDF real nunca pasaría por una ruta que reciba el archivo. Por eso el
+navegador sube el archivo directo a Supabase Storage con el cliente de
+sesión (`lib/supabase/client.ts`), y `POST /api/licitaciones/[id]/documento`
+solo recibe el path resultante (un JSON chico) para validar la regla de
+negocio (`borrador`) y guardar la URL pública — el archivo en sí nunca pasa
+por nuestra función.
+
 ```
 supabase/migrations/     Esquema, triggers, RLS, cron (fuente de verdad)
 lib/domain/licitaciones/ Máquina de estados + reglas de negocio (espejo, UX)
