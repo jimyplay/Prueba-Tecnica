@@ -28,7 +28,10 @@ pasan por la API. La capa de dominio en `lib/domain/licitaciones/` (
 `state-machine.ts`, `validators.ts`, `service.ts`) espeja esas mismas reglas
 únicamente para devolver errores legibles antes de golpear la base de datos;
 si un trigger rechaza algo que la app no anticipó, el error de Postgres
-(`errcode 22023`) se traduce igual a un 409 en `lib/api/errors.ts`.
+(`errcode 22023`) se traduce igual a un 409 en `lib/api/errors.ts`. Ese mismo
+archivo también traduce errores de Supabase Storage (forma distinta a los de
+Postgrest — `status`/`statusCode` en vez de `code`) para que una subida
+fallida muestre el motivo real en vez de un 500 genérico.
 
 ```
 supabase/migrations/     Esquema, triggers, RLS, cron (fuente de verdad)
@@ -54,6 +57,7 @@ cron — queda registrado en `historial_transiciones` (usuario `null` = sistema)
 
 - El total de productos de una licitación no puede superar su presupuesto máximo.
 - Solo se puede enviar (`borrador → activa`) con documento de propuesta adjunto.
+- El documento de propuesta solo puede subirse o quitarse (para reemplazarlo) mientras está en `borrador`.
 - Al enviar, se dispara un email real al cliente con el resumen y el documento adjunto.
 - Productos bloqueados (no se pueden agregar/quitar) en `finalizada`, `por_cobrar`, `cobrada`, `perdida`.
 - Pagos solo en `por_cobrar`; un pago no puede superar el saldo pendiente.
@@ -145,6 +149,6 @@ desarrollo, antes de tener la UI probada en navegador:
 
 ## Pendientes
 
-- [ ] Admin bootstrap real (pasos 5–6 de arriba) en el proyecto ya desplegado.
-- [ ] Probar el flujo completo desde el navegador (creado y verificado por API/SQL hasta ahora, falta clickear la UI real).
+- [x] Admin bootstrap real en el proyecto desplegado.
+- [ ] Probar el flujo completo desde el navegador (creado y verificado por API/SQL hasta ahora; en curso).
 - [ ] Evidencia final "de producto real" para la entrega (capturas de email recibido, URL del documento, log de `cron.job_run_details` en producción).
