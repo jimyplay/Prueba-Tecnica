@@ -40,3 +40,12 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Herramientas de desarrollo asistido por Claude Code (agentes, skills, MCP)
+# - no forman parte de la entrega, quedan solo en el entorno local.
+.claude/
+.agents/
+.mcp.json
+skills-lock.json
+/AGENTS.md
+/CLAUDE.md
