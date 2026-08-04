@@ -136,14 +136,29 @@ export default function LicitacionDetallePage({
       <section className="space-y-3 rounded-lg border border-gray-200 bg-white p-4">
         <h2 className="font-medium text-gray-900">Documento de propuesta</h2>
         {licitacion.documento_propuesta_url ? (
-          <a
-            href={licitacion.documento_propuesta_url}
-            target="_blank"
-            rel="noreferrer"
-            className="text-sm text-blue-600 hover:underline"
-          >
-            Ver documento adjunto
-          </a>
+          <div className="flex items-center gap-3">
+            <a
+              href={licitacion.documento_propuesta_url}
+              target="_blank"
+              rel="noreferrer"
+              className="text-sm text-blue-600 hover:underline"
+            >
+              Ver documento adjunto
+            </a>
+            {licitacion.estado === "borrador" && (
+              <button
+                disabled={busy}
+                onClick={() =>
+                  ejecutar(() =>
+                    fetch(`/api/licitaciones/${id}/documento`, { method: "DELETE" })
+                  )
+                }
+                className="text-xs text-red-600 hover:underline disabled:opacity-50"
+              >
+                Quitar
+              </button>
+            )}
+          </div>
         ) : (
           <p className="text-sm text-gray-500">Sin documento adjunto.</p>
         )}
