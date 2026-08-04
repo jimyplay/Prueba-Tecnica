@@ -52,3 +52,7 @@ skills-lock.json
 
 # Enunciado de la prueba tecnica - no va en la entrega
 /Prueba Técnica v2.pdf
+
+# Capturas crudas de staging - las que sirven ya estan copiadas a
+# docs/evidencia/ con nombres prolijos y embebidas en el README.
+/Capturas/

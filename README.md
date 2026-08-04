@@ -174,8 +174,14 @@ resend.com/domains y usar un `from` de ese dominio.
   rechaza requests de más de ~4.5MB antes de que la app los vea — se movió
   la subida a directo-navegador-a-Storage.
 
+### Capturas
+
+| | |
+|---|---|
+| ![Inbox con los correos reales recibidos](docs/evidencia/01-inbox-emails.jpeg) **Inbox real**: 3 correos de "Licitación enviada" recibidos, cada uno con su PDF adjunto. | ![Email abierto con el adjunto y el resumen](docs/evidencia/02-email-con-adjunto.jpeg) **Email con adjunto**: resumen de productos/presupuesto/fecha límite y el documento de propuesta adjunto, generado por `enviar`. |
+| ![Licitación en estado activa con productos y acciones](docs/evidencia/03-licitacion-activa.jpeg) **Licitación activa**: documento adjunto, productos cargados, y las acciones válidas para ese estado (finalizar/perder). | ![Licitación en estado perdida con su historial completo](docs/evidencia/04-licitacion-perdida-historial.jpeg) **Historial de transiciones**: una licitación en `perdida`, con el registro completo `borrador → activa → perdida`. |
+| ![Dashboard con una licitación próxima a vencer](docs/evidencia/05-dashboard.jpeg) **Dashboard**: panel de licitaciones activas a menos de 48h de su fecha límite. | ![Panel de usuarios, solo visible para admins](docs/evidencia/06-usuarios.jpeg) **Usuarios**: alta de usuarios admin-gated (backend y UI). |
+
 ## Pendientes
 
-Ninguno funcional. Solo queda, para el paquete de entrega en sí (no es
-código): juntar las capturas de pantalla del email recibido y de la
-licitación completa como evidencia visual adjunta a la entrega.
+Ninguno.
