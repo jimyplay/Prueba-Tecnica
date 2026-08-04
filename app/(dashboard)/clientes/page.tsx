@@ -17,6 +17,13 @@ export default function ClientesPage() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
+  const [editandoId, setEditandoId] = useState<string | null>(null);
+  const [editNombre, setEditNombre] = useState("");
+  const [editEmail, setEditEmail] = useState("");
+  const [editTelefono, setEditTelefono] = useState("");
+  const [editError, setEditError] = useState<string | null>(null);
+  const [editLoading, setEditLoading] = useState(false);
+
   async function cargar() {
     const res = await fetch("/api/clientes");
     const { data } = await res.json();
@@ -53,6 +60,40 @@ export default function ClientesPage() {
     setNombre("");
     setEmail("");
     setTelefono("");
+    cargar();
+  }
+
+  function empezarEdicion(c: Cliente) {
+    setEditandoId(c.id);
+    setEditNombre(c.nombre);
+    setEditEmail(c.email ?? "");
+    setEditTelefono(c.telefono ?? "");
+    setEditError(null);
+  }
+
+  async function guardarEdicion(id: string) {
+    setEditError(null);
+    setEditLoading(true);
+
+    const res = await fetch(`/api/clientes/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        nombre: editNombre,
+        email: editEmail || null,
+        telefono: editTelefono || null,
+      }),
+    });
+
+    const body = await res.json().catch(() => ({}));
+    setEditLoading(false);
+
+    if (!res.ok) {
+      setEditError(body.error ?? "Error al actualizar el cliente");
+      return;
+    }
+
+    setEditandoId(null);
     cargar();
   }
 
@@ -101,14 +142,63 @@ export default function ClientesPage() {
       </form>
 
       <ul className="divide-y divide-gray-200 rounded-lg border border-gray-200 bg-white">
-        {clientes.map((c) => (
-          <li key={c.id} className="px-4 py-3">
-            <p className="font-medium text-gray-900">{c.nombre}</p>
-            <p className="text-sm text-gray-500">
-              {c.email ?? "sin email"} · {c.telefono ?? "sin teléfono"}
-            </p>
-          </li>
-        ))}
+        {clientes.map((c) =>
+          editandoId === c.id ? (
+            <li key={c.id} className="space-y-2 px-4 py-3">
+              <div className="flex flex-wrap gap-2">
+                <input
+                  value={editNombre}
+                  onChange={(e) => setEditNombre(e.target.value)}
+                  placeholder="Nombre"
+                  className="rounded-md border border-gray-300 px-2 py-1 text-sm"
+                />
+                <input
+                  type="email"
+                  value={editEmail}
+                  onChange={(e) => setEditEmail(e.target.value)}
+                  placeholder="Email"
+                  className="rounded-md border border-gray-300 px-2 py-1 text-sm"
+                />
+                <input
+                  value={editTelefono}
+                  onChange={(e) => setEditTelefono(e.target.value)}
+                  placeholder="Teléfono"
+                  className="rounded-md border border-gray-300 px-2 py-1 text-sm"
+                />
+                <button
+                  disabled={editLoading}
+                  onClick={() => guardarEdicion(c.id)}
+                  className="rounded-md bg-gray-900 px-3 py-1 text-xs text-white disabled:opacity-50"
+                >
+                  Guardar
+                </button>
+                <button
+                  disabled={editLoading}
+                  onClick={() => setEditandoId(null)}
+                  className="rounded-md border border-gray-300 px-3 py-1 text-xs text-gray-700"
+                >
+                  Cancelar
+                </button>
+              </div>
+              {editError && <p className="text-xs text-red-600">{editError}</p>}
+            </li>
+          ) : (
+            <li key={c.id} className="flex items-center justify-between px-4 py-3">
+              <div>
+                <p className="font-medium text-gray-900">{c.nombre}</p>
+                <p className="text-sm text-gray-500">
+                  {c.email ?? "sin email"} · {c.telefono ?? "sin teléfono"}
+                </p>
+              </div>
+              <button
+                onClick={() => empezarEdicion(c)}
+                className="text-xs text-blue-600 hover:underline"
+              >
+                Editar
+              </button>
+            </li>
+          )
+        )}
       </ul>
     </div>
   );
