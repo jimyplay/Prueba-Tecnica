@@ -142,33 +142,40 @@ resend.com/domains y usar un `from` de ese dominio.
 
 ## Evidencia de las integraciones reales
 
-Verificado directamente contra las APIs reales (Resend + Storage) durante el
-desarrollo, antes de tener la UI probada en navegador:
+**Verificado en producción, con uso real (no solo pruebas por API/SQL):**
 
-- **Email con adjunto**: enviado y confirmado por Resend (`id` de mensaje
-  devuelto por `POST https://api.resend.com/emails`, mismo request que arma
-  `lib/email/resend.ts` + `app/api/licitaciones/[id]/enviar/route.ts`).
-- **Recordatorio automático desde el cron**: se ejecutó manualmente
-  `select public.enviar_recordatorios_vencimiento();` sobre una licitación
-  real con `fecha_limite` <48h, y se confirmó en `net._http_response` que
-  Resend respondió `status_code: 200` con un `id` de mensaje — prueba que el
-  camino `pg_cron → pg_net → Resend` funciona end-to-end dentro de Postgres,
-  no solo en teoría.
-- **Storage**: se subió un archivo real al bucket `propuestas` vía la API
-  REST y se confirmó que su URL pública (`/storage/v1/object/public/...`)
-  devuelve el contenido correcto con `200 OK`.
-- **Datos de prueba usados en estas verificaciones ya fueron eliminados** —
-  la base quedó limpia. Falta capturar evidencia "de producto real": crear
-  una licitación real desde la UI, enviarla, y guardar captura del email
-  recibido + captura del `cron.job_run_details` en el proyecto desplegado.
-- **Deploy en Vercel**: verificado público y funcional — `/` redirige a
-  `/login` (307), `/login` responde 200, y la API rechaza requests sin
-  sesión con 401. El cron corre solo dentro de Supabase independientemente
-  del deploy: `cron.job_run_details` muestra ambos jobs en `succeeded` cada
-  15 min de forma continua desde que se crearon.
+- **Flujo completo end-to-end** probado desde el navegador contra
+  `https://prueba-tecnica-jimyplay1.vercel.app`: alta de cliente y producto,
+  creación de licitación (borrador), agregar productos, subir documento de
+  propuesta (PDF real de 5MB), enviar al cliente, marcar finalizada,
+  facturar, registrar pagos parciales (con rechazo confirmado de un pago que
+  excedía el saldo), auto-cobro al saldar, e historial de transiciones
+  completo y correcto en cada caso.
+- **Email con adjunto**: recibido de verdad por el usuario, con el documento
+  adjunto, al enviar una licitación real desde la UI.
+- **Storage**: documento real accesible vía su URL pública
+  (`/storage/v1/object/public/propuestas/...`).
+- **Recordatorio automático del cron**: verificado que el camino
+  `pg_cron → pg_net → Resend` responde `200` con un `id` de mensaje real de
+  Resend (`net._http_response`), y que ambos jobs (vencimiento y
+  recordatorio) corren cada 15 min de forma continua en producción
+  (`cron.job_run_details`), independientemente del estado del deploy.
+- **Deploy en Vercel**: público y funcional — `/` redirige a `/login`,
+  la API rechaza requests sin sesión con 401.
+
+**Bugs reales encontrados probando el flujo y ya corregidos:**
+- Licitaciones facturadas por $0 (sin productos cargados) quedaban trabadas
+  en `por_cobrar` para siempre — arreglado con un trigger que las auto-cobra
+  (`0007_autocobrar_facturado_cero.sql`).
+- No había forma de editar un cliente ya creado (el enunciado solo pedía
+  alta y listado) — se agregó `PATCH /api/clientes/[id]` porque bloqueaba
+  probar el envío con un email mal cargado.
+- Subir un PDF de varios MB fallaba con un error genérico porque Vercel
+  rechaza requests de más de ~4.5MB antes de que la app los vea — se movió
+  la subida a directo-navegador-a-Storage.
 
 ## Pendientes
 
-- [x] Admin bootstrap real en el proyecto desplegado.
-- [ ] Probar el flujo completo desde el navegador (creado y verificado por API/SQL hasta ahora; en curso).
-- [ ] Evidencia final "de producto real" para la entrega (capturas de email recibido, URL del documento, log de `cron.job_run_details` en producción).
+Ninguno funcional. Solo queda, para el paquete de entrega en sí (no es
+código): juntar las capturas de pantalla del email recibido y de la
+licitación completa como evidencia visual adjunta a la entrega.
