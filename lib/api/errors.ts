@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { ZodError } from "zod";
+import { isStorageError } from "@supabase/storage-js";
 import { AuthError } from "@/lib/auth/session";
 
 export class ValidationError extends Error {}
@@ -53,6 +54,16 @@ export function handleApiError(error: unknown): NextResponse {
     if (error.code === "PGRST116") {
       return NextResponse.json({ error: "No encontrado" }, { status: 404 });
     }
+  }
+  // Errores de Supabase Storage (subida/descarga de documentos): tienen
+  // forma distinta a los de Postgrest (status/statusCode, no code), asi que
+  // el chequeo de arriba nunca los detecta y sin este caso caian todos al
+  // 500 generico de abajo sin mostrar el motivo real (ej. archivo duplicado,
+  // tipo de archivo no permitido, bucket sin permisos).
+  if (isStorageError(error)) {
+    const status = "status" in error && typeof error.status === "number" ? error.status : 400;
+    console.error("Storage error:", error);
+    return NextResponse.json({ error: error.message }, { status });
   }
 
   console.error(error);
