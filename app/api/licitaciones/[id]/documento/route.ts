@@ -1,8 +1,19 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { getSessionUser } from "@/lib/auth/session";
 import { ConflictError, NotFoundError, ValidationError, handleApiError } from "@/lib/api/errors";
 
+const registrarDocumentoSchema = z.object({
+  path: z.string().min(1),
+});
+
+// El archivo se sube DIRECTO del navegador a Supabase Storage (ver
+// lib/supabase/client.ts en la pagina de detalle) - las funciones
+// serverless de Vercel rechazan cualquier request de mas de ~4.5MB
+// (FUNCTION_PAYLOAD_TOO_LARGE) antes de que nuestro codigo la vea, asi
+// que un PDF real nunca deberia pasar por esta ruta. Esta ruta solo
+// registra el path ya subido y valida la regla de negocio (borrador).
 export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -10,11 +21,10 @@ export async function POST(
   try {
     await getSessionUser();
     const { id } = await params;
+    const { path } = registrarDocumentoSchema.parse(await request.json());
 
-    const formData = await request.formData();
-    const file = formData.get("file");
-    if (!(file instanceof File)) {
-      throw new ValidationError("Se requiere un archivo en el campo 'file'");
+    if (!path.startsWith(`${id}/`)) {
+      throw new ValidationError("El path del documento no corresponde a esta licitacion");
     }
 
     const supabase = await createClient();
@@ -31,12 +41,6 @@ export async function POST(
         "El documento de propuesta solo puede subirse mientras la licitacion esta en borrador"
       );
     }
-
-    const path = `${id}/${Date.now()}-${file.name}`;
-    const { error: uploadError } = await supabase.storage
-      .from("propuestas")
-      .upload(path, file, { contentType: file.type, upsert: false });
-    if (uploadError) throw uploadError;
 
     const {
       data: { publicUrl },

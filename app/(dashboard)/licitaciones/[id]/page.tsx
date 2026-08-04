@@ -1,6 +1,7 @@
 "use client";
 
 import { use, useEffect, useState } from "react";
+import { createClient } from "@/lib/supabase/client";
 
 type Producto = { id: string; nombre: string; precio_unitario: number };
 type LicitacionProducto = {
@@ -99,6 +100,38 @@ export default function LicitacionDetallePage({
     return true;
   }
 
+  // El archivo va DIRECTO del navegador a Supabase Storage: las funciones
+  // serverless de Vercel rechazan cualquier request de mas de ~4.5MB antes
+  // de que nuestro codigo la vea (FUNCTION_PAYLOAD_TOO_LARGE), asi que un
+  // PDF real nunca puede pasar por nuestra propia API. Solo el path final
+  // se manda al backend para que valide la regla de negocio y lo registre.
+  async function subirDocumento() {
+    if (!archivo) return;
+    setError(null);
+    setBusy(true);
+
+    const supabase = createClient();
+    const path = `${id}/${Date.now()}-${archivo.name}`;
+    const { error: uploadError } = await supabase.storage
+      .from("propuestas")
+      .upload(path, archivo, { contentType: archivo.type });
+
+    if (uploadError) {
+      setBusy(false);
+      setError(uploadError.message);
+      return;
+    }
+
+    const ok = await ejecutar(() =>
+      fetch(`/api/licitaciones/${id}/documento`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ path }),
+      })
+    );
+    if (ok) setArchivo(null);
+  }
+
   if (!licitacion) {
     return <p className="text-sm text-gray-500">{error ?? "Cargando..."}</p>;
   }
@@ -171,20 +204,10 @@ export default function LicitacionDetallePage({
             />
             <button
               disabled={!archivo || busy}
-              onClick={() => {
-                if (!archivo) return;
-                const formData = new FormData();
-                formData.append("file", archivo);
-                ejecutar(() =>
-                  fetch(`/api/licitaciones/${id}/documento`, {
-                    method: "POST",
-                    body: formData,
-                  })
-                );
-              }}
+              onClick={subirDocumento}
               className="rounded-md bg-gray-900 px-3 py-1.5 text-sm text-white disabled:opacity-50"
             >
-              Subir
+              {busy ? "Subiendo..." : "Subir"}
             </button>
           </div>
         )}
